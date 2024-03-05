@@ -1,5 +1,10 @@
 import nltk
+import pandas as pd
+import sumy;
 
+data = pd.read_csv('https://raw.githubusercontent.com/mohitgupta-omg/Kaggle-SMS-Spam-Collection-Dataset-/master/spam.csv', encoding='latin-1')
+
+data.head()
 nltk.download('all')
 
 
