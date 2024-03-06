@@ -10,4 +10,8 @@ The rest is easy.                       <br>
 * Some technical aspects:
   * must work in virtual environment to avoid package conflict
   * must install requirement.txt. DO NOT change versions.
+    * pip install -r requirements.txt
+
+  * You might need to add interpreter.
+    * I can help you thru it.
   * TBD
