@@ -16,14 +16,14 @@ k: Number of folds of validation. This is slightly more advanced concept (only v
 I might add more in the future
 '''
 global N, d, k
-N = 33  #in the case of my test data, I know N is 33. It is also X.shape[0]
+N = 10000  #in the case of my test data, I know N is 33. It is also X.shape[0]
 d = 1   #as above, also X.shape[1]
 k = 3   #3 makes sense as 33 is divisible by 3, this is a designer choice
 
-df = pd.read_csv("testData.csv")  # note that I assume the grader has the csv file of exactly this name and in same directory as the code.
+df = pd.read_csv("data2.csv")  # note that I assume the grader has the csv file of exactly this name and in same directory as the code.
 data = df.values
-X = data[:,:d] # note that this is not column vec, need X.reshape(-1,1) to make it column vec
-y = data[:,d]
+X = data[:,0] # note that this is not column vec, need X.reshape(-1,1) to make it column vec
+y = data[:,1]
 
 # Next, we set nu_samp to be the number of examples, and N to be the 1/3 the number of original examples.
 N //=k
@@ -78,15 +78,15 @@ for d in model_degree:
 
 
 
-    print('w: ', w)
-    print("X_tr_poly size:", X_tr_poly.shape)
-    print("max:", np.max(X_tr_poly))
-    print('E_in: ',E_in)
-    print("E_val:", E_val)
-    print('-------------------------')
-    ################################################################
-    d = 10
-    print('Order: ', d)
+    # print('w: ', w)
+    # print("X_tr_poly size:", X_tr_poly.shape)
+    # print("max:", np.max(X_tr_poly))
+    # print('E_in: ',E_in)
+    # print("E_val:", E_val)
+    # print('-------------------------')
+    # ################################################################
+    # d = 10
+    # print('Order: ', d)
     poly = PolynomialFeatures(d)
     X_tr_poly = poly.fit_transform(X_tr)  # transforms the training data
     X_val_poly = poly.fit_transform(X_val)  # transforms the validation data
@@ -95,11 +95,9 @@ for d in model_degree:
     train_costs_10 = []
     w_dict_10 = {}
 
-    lambda_values = np.logspace(-10, 1,
-                                10)  # After finding the best lambda value, we should go and try more lambda values near the best one we have tried.  However, our goal here to show how regularization works - so we will skip that step.
-
+    lambda_values = np.logspace(-10, 1,10)  # After finding the best lambda value, we should go and try more lambda values near the best one we have tried.  However, our goal here to show how regularization works - so we will skip that step.
+    # lambda_values = range(1,10)
     for lambda1 in lambda_values:
-        # TODO Q10
         # Use your function from part 1 to determine w.
         w = poly_regression(X_tr_poly, y_tr, lambda1)  # no changes
         w_dict_10[lambda1] = w  # save w for the current value of lambda1
@@ -118,9 +116,10 @@ for d in model_degree:
     poly = PolynomialFeatures(d)
     xp = np.linspace(-5, 5, 200).reshape((200, 1))
     xp_d = poly.fit_transform(xp)
-    # TODO Q11
 
+    counter = 0
     for lambda1 in lambda_values:
+        counter += 1
         plt.xlim([-5, 5])
         plt.ylim([-80, 85])
         # Plot data
@@ -140,8 +139,19 @@ for d in model_degree:
         # plt.show(block=False)
 
     # print(type(train_costs_10))
+print("best in validation set 6",np.argmin(validation_costs_6))
 
-print(np.argmin(validation_costs_10))
+print("best in set 10",np.argmin(validation_costs_10))
 # above parameter will be used as the best model selection
 # we also need to trim off irrelevant features using lasso
-
+# print(w_dict_10[6])
+# yp_hat = xp_d.dot(w_dict_10[6])  # type the following: xp_d.dot(w_dict_10[lambda1])
+# xp = np.linspace(-5, 5, 200).reshape((200, 1))
+# plt.plot(xp, yp_hat)
+# plt.xlim(-5, 5)
+#
+# plt.title('Training data & model of degree ' + str(d))
+# plt.xlabel('X')
+# plt.ylabel('y')
+# plt.grid(True)
+# plt.show(block=False)
