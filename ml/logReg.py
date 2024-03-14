@@ -26,9 +26,33 @@ h_mat = np.array(h_test)
 
 y = np.array([[0],[0],[0],[0],[1],[1],[1],[1]])
 
+x = np.array([[0.49,0.09],[1.69,0.04],[0.04,0.64],[1,0.16],[0.16,0.09],[0.25,0],[0.49,0],[0.04,0.01]]) #raw data
+x = np.hstack((np.ones((x.shape[0],1)),x))   #augmentation
+
+w = np.array([1.33,-2.96,-2.77])
+# w = np.array([0.66,-2.24,-0.18])
+
+'''
+Sigmoid function
+w is 1 by n coeff matrix, where n is num of features
+x is N by n data matrix after augmentation. N is sample size per feature
+
+return sigmoid matrix, which is the h matrix we use later.
+'''
+def sigmoid(w,x):
+    return np.reciprocal(np.ones((x.shape[0],1))+((np.exp((-w@x.T)).T).reshape(-1,1)))
+
+
+'''
+Max Likelihood Function
+'''
 def mlf(h,y):   #return just the value
 
     return -(y.T @ np.log(h) + ((np.ones((y.shape[0],1)) - y).T @ np.log(np.ones((h.shape[0],1))-h)))[0][0]
 # print(np.exp(h_mat))
-print(y.shape)
-print(mlf(h_mat, y))
+# print(y.shape)
+print(mlf(sigmoid(w,x), y))
+# print(mlf(h_mat, y))
+
+# print(sigmoid(w,x))
+# print((np.ones((x.shape[0],1))+((np.exp((-w@x.T)).T).reshape(-1,1))).shape)
