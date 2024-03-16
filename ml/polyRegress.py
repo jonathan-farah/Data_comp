@@ -6,7 +6,7 @@ def poly_regression(X,y,lambda1): # We are using X for the design matrix.  It mi
     d = X.shape[1]
     N = X.shape[0]
     I_N = np.identity(d,dtype = float)  #using d not N because addition with X.T@X which is d by d
-    w = (np.linalg.inv(X.T@X+N*lambda1*I_N))@X.T@y  #very useful regualrization formula
+    w = (np.linalg.inv(X.T@X+N*lambda1*I_N))@(X.T@y)  #very useful regualrization formula
     return w
 
 # print((np.identity(33,dtype = float)))
@@ -24,3 +24,12 @@ code below ensures linear regression is correct
 '''
 checked against slides. Good.
 '''
+
+
+# w = np.array([0.66,-2.24,-0.18])
+# x = np.array([[0.49,0.09],[1.69,0.04],[0.04,0.64],[1,0.16],[0.16,0.09],[0.25,0],[0.49,0],[0.04,0.01]]) #raw data
+x = np.array([[30,0],[50,1],[70,1],[80,2],[100,1]])
+x = np.hstack((np.ones((x.shape[0],1)),x))   #augmentation
+# y = np.array([[0],[0],[0],[0],[1],[1],[1],[1]])
+y = np.array([[0],[1],[0],[1],[1]])
+print(poly_regression(x,y,0))

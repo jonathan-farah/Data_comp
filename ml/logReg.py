@@ -29,8 +29,8 @@ y = np.array([[0],[0],[0],[0],[1],[1],[1],[1]])
 x = np.array([[0.49,0.09],[1.69,0.04],[0.04,0.64],[1,0.16],[0.16,0.09],[0.25,0],[0.49,0],[0.04,0.01]]) #raw data
 x = np.hstack((np.ones((x.shape[0],1)),x))   #augmentation
 
-w = np.array([1.33,-2.96,-2.77])
-# w = np.array([0.66,-2.24,-0.18])
+# w = np.array([1.33,-2.96,-2.77])
+w = np.array([0.66,-2.24,-0.18])
 
 '''
 Sigmoid function
@@ -51,8 +51,31 @@ def mlf(h,y):   #return just the value
     return -(y.T @ np.log(h) + ((np.ones((y.shape[0],1)) - y).T @ np.log(np.ones((h.shape[0],1))-h)))[0][0]
 # print(np.exp(h_mat))
 # print(y.shape)
-print(mlf(sigmoid(w,x), y))
+# print(mlf(sigmoid(w,x), y))
 # print(mlf(h_mat, y))
 
 # print(sigmoid(w,x))
 # print((np.ones((x.shape[0],1))+((np.exp((-w@x.T)).T).reshape(-1,1))).shape)
+
+'''
+Gradient ascent on entire w matrix
+pass in orginial coeff matrix w,
+x val --training sample
+y val --labels for training sample
+learning rate a,
+iteration number iter
+return improved coeff matrix
+'''
+def gradientAscent(w,x,y,a,iter):
+    for i in range(iter):
+        w = w + ((a/x.shape[0])*(x.T@(y-sigmoid(w,x)))).T
+    return w
+
+
+print(gradientAscent(w,x,y,0.1,1))
+a = 0.1
+
+# print(y.shape)
+# mat1 = np.array([[1],[2],[3]])
+# mat2 = np.array([[1,2],[2,4],[3,6]])
+print((a/x.shape[0]))
