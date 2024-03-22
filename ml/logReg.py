@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Scikit-learn utilities
-from sklearn.datasets import load_breast_cancer
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 
@@ -45,6 +44,8 @@ def sigmoid(w,x):
 
 '''
 Max Likelihood Function
+
+has cross entropy applied.
 '''
 def mlf(h,y):   #return just the value
 
