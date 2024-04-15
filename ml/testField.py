@@ -1,20 +1,50 @@
+
 import numpy as np
-import matplotlib
-import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import PolynomialFeatures
+from scipy import stats
 
-from polyRegress import poly_regression
+# use seaborn plotting defaults
+import seaborn as sns; sns.set()
+
 
 
 '''
-data1 has 605 rows, need to remove middle column
-data2 has 10000 rows.
+just doing math
 '''
+import matplotlib
 
-df = pd.read_csv("data1.csv")  # note that I assume the grader has the csv file of exactly this name and in same directory as the code.
-data = df.values
-X = data[:,:1] # note that this is not column vec, need X.reshape(-1,1) to make it column vec
-# y = data[:,d]
-print(X.shape)
+'''
+coeff is a list containing all coeffs plus the bias term
+coord is x point , in list
+y is y val
+'''
+def funcMarg(coef,coord,y):
+    res = 0
+    for i in range(len(coord)):
+        res += coef[i]*coord[i] #one by one
+    res += coef[-1] # add bias
+    res *= y
+    return res
+
+coef1 = [3,-3,-3]
+coef2 = [300,-300,-300]
+
+print(funcMarg(coef1,[1,1.5],-1))
+
+def geoMarg(funcMarg,coef):
+    mag = 0
+    coef.pop()
+    for each in coef:
+        mag += each*each
+    mag = mag**0.5
+    return funcMarg/mag
+
+# print(geoMarg(funcMarg(),coef1))
+# print(coef1)
+
+###################################handling plot#######################################
+
+print("-----------------\n")
+for i in range(10,-1,-1):
+    print(i)
+
