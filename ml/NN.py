@@ -1,4 +1,7 @@
 '''
+Author: Ren
+(I think my prof or TA might be checking this code lol)
+
 This is a teaching/learning tool
 Does not intend to perform neural network training or prediction
 give weight matrices, bias, outcome, and raw input,
@@ -59,6 +62,17 @@ Careful: plug in entire sigmoid expression, or use the number produced by sigmoi
 def sigmoid_derivative(sig):
     return sig*(1-sig)
 
+
+def relu(z):
+    return max(0,z)
+
+'''
+we use differential = 0 at 0.
+'''
+def relu_derivative(z):
+    if z > 0: return 1
+    return 0
+
 '''
 A helper function to get a single node (on next layer) z value 
 from one layer of nodes and one layer of bias
@@ -92,7 +106,11 @@ def forward_propagation(NodeMat, BiasMat):#check the general dimension
     for layerInd in range(len(NodeMat)-1): #from each layer, propagate to next layer
         for eachNodeInd in range(len(NodeMat[layerInd+1])): # each index position in the next layer
             NodeMat[layerInd+1][eachNodeInd].z = returnZ(NodeMat[layerInd], BiasMat[layerInd], eachNodeInd)
-            NodeMat[layerInd+1][eachNodeInd].a = sigmoid(NodeMat[layerInd+1][eachNodeInd].z)    #get activation
+            # if(layerInd+1 == 1):    #second layer relu
+            NodeMat[layerInd+1][eachNodeInd].a = relu(NodeMat[layerInd+1][eachNodeInd].z)    #get activation
+            # else:
+            # NodeMat[layerInd+1][eachNodeInd].a = sigmoid(NodeMat[layerInd+1][eachNodeInd].z)    #get activation
+
     '''
     The X values are straightsaway used as first layer of NodeMat
     Note we are still not fixing zero indexing issue.
@@ -125,18 +143,25 @@ def backward_propagation(NodeMat, yPred, yTrue):
         for eachNodeInd in range(len(NodeMat[layerInd])): # now we update one node at a time, same layer range as above
             localDelta = 0
             for nextLayerInd in range(len(NodeMat[layerInd+1])):    #accumulate based on each node on the next layer
-                localDelta += NodeMat[layerInd+1][nextLayerInd].delta * NodeMat[layerInd][eachNodeInd].weight[nextLayerInd] * sigmoid_derivative(NodeMat[layerInd][eachNodeInd].a)
+                # if(layerInd == 1):
+                localDelta += NodeMat[layerInd+1][nextLayerInd].delta * NodeMat[layerInd][eachNodeInd].weight[nextLayerInd] * relu_derivative(NodeMat[layerInd][eachNodeInd].a)
+                # else:
+                # localDelta += NodeMat[layerInd+1][nextLayerInd].delta * NodeMat[layerInd][eachNodeInd].weight[nextLayerInd] * sigmoid_derivative(NodeMat[layerInd][eachNodeInd].a)
             NodeMat[layerInd][eachNodeInd].delta =localDelta
+
+
+def getdJdW(NodeMat, wto, wfrom, wlayer):
+    return NodeMat[wlayer+1][wto].delta * NodeMat[wlayer][wfrom].a
 
 
 
 if __name__ == "__main__":
     NodeMat = [[None, None, None], [None, None, None], [None, None]]    #set all weights
-    NodeMat[0][0] = Node([4,-4,1])
-    NodeMat[0][1] = Node([4,-4,1])
+    NodeMat[0][0] = Node([1,-4,1])
+    NodeMat[0][1] = Node([0,-4,1])
     NodeMat[0][2] = Node([1,1,-5])
-    NodeMat[1][0] = Node([4,1])
-    NodeMat[1][1] = Node([4,1])
+    NodeMat[1][0] = Node([1,1])
+    NodeMat[1][1] = Node([-1,1])
     NodeMat[1][2] = Node([1,2])
     NodeMat[2][0] = Node()
     NodeMat[2][1] = Node()
@@ -149,16 +174,81 @@ if __name__ == "__main__":
     NodeMat[0][1].a = 2
     NodeMat[0][2].a = 3
 
-    # for eachLayer in NodeMat:
-    #     for eachNode in eachLayer:
-    #         print(eachNode,end=" ")
-    #     print()
+    yTrue = [1,0]
+    yPred = [0,4]
 
 
+
+
+    #
+    #
     forward_propagation(NodeMat, BiasMat)
 
-    for eachNode in NodeMat[2]: #check hidden layer 2, in the middle, the second layer
-        print("zval at right final layer: ",eachNode.z)
 
-    for eachNode in NodeMat[2]: #check hidden layer 2, in the middle, the second layer
-        print("activation at right final layer: ",eachNode.a)
+    backward_propagation(NodeMat,yPred, yTrue)
+
+
+    layer = 2
+    for eachInd in range(len(NodeMat[layer])):
+        print("now, delta of layer ",layer+1,": ",NodeMat[layer][eachInd].a)
+    # for eachNode in NodeMat[2]: #check hidden layer 2, in the middle, the second layer
+    #     print("zval at right final layer: ",eachNode.z)
+    #
+    # for eachNode in NodeMat[1]: #check hidden layer 2, in the middle, the second layer
+    #     print("activation at middle layer: ",eachNode.a)
+
+
+    # yPred = [NodeMat[2][0].a,NodeMat[2][1].a]
+    # yTrue = [1,0]
+    # backward_propagation(NodeMat,yPred, yTrue)
+    # print("delta1 at layer3: ", NodeMat[2][0].delta)
+
+    # print("then, dJ dw on layer2, from node 1 to node 1: ", getdJdW(NodeMat,0,0,1))
+    #
+    # print("then, we want delta1 of layer 2: ", NodeMat[1][0])
+    #
+    # print("then, dJ dw on layer1, from node 1 to node 1: ", getdJdW(NodeMat,0,0,0))
+    #
+    # print("then, check a11: ",NodeMat[0][0].a)
+
+    '''
+    above is params for problem 1
+    '''
+
+
+    '''
+    below is qn3 params
+    '''
+    # #
+    # NodeMat = [[None, None], [None, None], [None]]    #set all weights
+    # NodeMat[0][0] = Node([1,3])
+    # NodeMat[0][1] = Node([2,4])
+    # NodeMat
+    # NodeMat[1][0] = Node([1])
+    # NodeMat[1][1] = Node([2])
+    # NodeMat[2][0] = Node()
+    #
+    # BiasMat = [None,None]   #set all biases
+    # BiasMat[0] = BiasLayer([1,-1])
+    # BiasMat[1] = BiasLayer([1])
+    #
+    # NodeMat[0][0].a = 0 #set raw input is equivalent to setting first layer activations
+    # NodeMat[0][1].a = 1
+    #
+    # yTrue = [0]
+    #
+    # # for eachLayer in NodeMat:
+    # #     for eachNode in eachLayer:
+    # #         print(eachNode,end=" ")
+    # #     print()
+    #
+    # forward_propagation(NodeMat,BiasMat)
+    #
+    # yPred = [NodeMat[-1][0].a]
+    #
+    # backward_propagation(NodeMat,yPred,yTrue)
+    #
+    # layer = 0
+    # for eachInd in range(len(NodeMat[layer])):
+    #     print("now, delta of layer ",layer+1,": ",NodeMat[layer][eachInd].a)
+    #
